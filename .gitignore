@@ -1,0 +1,9 @@
+.vagrant/
+.idea/
+vendor/
+vendor_dev/
+config/development.config.php
+data/cache/*
+data/documenti/*
+!data/cache/.gitkeep
+phpunit.xml
