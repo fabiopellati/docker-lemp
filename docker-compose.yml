@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 services:
   fp-app1:
     build:
@@ -24,28 +24,6 @@ services:
         ipv4_address: 172.16.238.10
       back_net:
         ipv4_address: 172.16.239.10
-  fp-app2:
-    build:
-      context: ./docker/app2
-      dockerfile: Dockerfile
-    ports:
-     - "8092:80"
-    volumes:
-     - ./src/app2:/code
-     - ./docker/app2/site.conf:/etc/nginx/conf.d/default.conf
-    links:
-      - fp-php:php
-      - fp-db:db
-      - fp-redis:redis
-    extra_hosts:
-      - fp:127.0.0.1
-    depends_on:
-      - fp-php
-      - fp-db
-      - fp-redis
-    networks:
-      front_net:
-        ipv4_address: 172.16.238.15
   fp-php:
     build:
       context: ./docker/php
@@ -53,7 +31,7 @@ services:
     ports:
      - "9000:9000"
     volumes:
-     - ./src/public:/code
+     - ./src/app1/public:/code
     links:
       - fp-db:db
       - fp-redis:redis
@@ -61,8 +39,6 @@ services:
       - fp-db
       - fp-redis
     networks:
-      front_net:
-        ipv4_address: 172.16.238.11
       back_net:
         ipv4_address: 172.16.239.11
   fp-db:
@@ -95,6 +71,28 @@ services:
     networks:
       back_net:
         ipv4_address: 172.16.239.13
+  fp-app2:
+    build:
+      context: ./docker/app2
+      dockerfile: Dockerfile
+    ports:
+     - "8092:80"
+    volumes:
+     - ./src/app2:/code
+     - ./docker/app2/site.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - fp-php:php
+      - fp-db:db
+      - fp-redis:redis
+    extra_hosts:
+      - fp:127.0.0.1
+    depends_on:
+      - fp-php
+      - fp-db
+      - fp-redis
+    networks:
+      front_net:
+        ipv4_address: 172.16.238.15
   fp-adminer:
     image: adminer:fastcgi
     container_name: fp_adminer
