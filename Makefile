@@ -2,10 +2,9 @@
 ################# Variables #######################
 SHELL           ?= /usr/local/bin/bash
 DOCKER		    ?= docker
-DOCKER_COMPOSE  ?= docker-compose -p fp-app 
-# DOCKER_COMPOSE_APP2  ?= docker-compose -p fp-app2 
-DOCKER_COMPOSE_PHP  ?= docker-compose -p fp-php
+DOCKER_COMPOSE  ?= docker-compose -p lemp
 SUDO_CHMOD      ?= sudo chmod -R 777
+SUDO_RMRF      ?= sudo rm -rf
 ###################################################
 
 ##### Makefile related #####
@@ -33,14 +32,12 @@ docker-clean: ##@docker Clean docker automation
 	$(DOCKER_COMPOSE) kill
 	$(DOCKER_COMPOSE) rm -fv
 	$(DOCKER_COMPOSE) down
-	$(DOCKER_COMPOSE_PHP) kill
-	$(DOCKER_COMPOSE_PHP) rm -fv
-	$(DOCKER_COMPOSE_PHP) down
 
 clean-dbs: ##@clean Clean docker automation
-	$(SUDO_CHMOD) docker/data/db
-	@rm -rf docker/data/db/*
-	@rm -rf docker/data/redis/*
+	$(SUDO_CHMOD) ./docker/data/db
+	$(SUDO_RMRF)  ./docker/data/db/*
+	$(SUDO_RMRF) ./docker/data/redis/*
+	$(SUDO_RMRF) ./docker/data/mongo/*
 
 ##### Main Targets #####
 
@@ -48,7 +45,6 @@ up: docker-up docker-info	##@fp-app Build and start containers with docker-compo
 
 stop:	##@fp-app Stop all running containers, started with docker-compose
 	$(DOCKER_COMPOSE) stop
-	$(DOCKER_COMPOSE_PHP) stop
 
 clean: docker-clean clean-dbs ##@fp-app Remove automation containers and clean dbs
 
