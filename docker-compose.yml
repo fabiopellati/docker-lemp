@@ -13,50 +13,30 @@ services:
       - fp-php:php
       - fp-db:db
       - fp-redis:redis
+#      - fp-mongo:mongo
     extra_hosts:
       - fp:127.0.0.1
     depends_on:
       - fp-php
       - fp-db
       - fp-redis
-  fp-php:
-    build:
-      context: ./docker/php
-      dockerfile: Dockerfile
-    ports:
-     - "9000:9000"
-    volumes:
-     - ./src/backapp:/code
-    links:
-      - fp-db:db
-      - fp-redis:redis
-    depends_on:
-      - fp-db
-      - fp-redis
-  fp-db:
-    build:
-      context: ./docker/db
-      dockerfile: Dockerfile
-    image: fp/db:latest
-    container_name: fp_db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_DATABASE: 'devel_db'
-      MYSQL_USER: 'devel'
-      MYSQL_PASSWORD: 'devel'
-    volumes:
-      - './src/backapp/data/sql/dump.sql:/docker-entrypoint-initdb.d/dump.sql'
-      - './src/backapp/data/sql/dump_data.sql:/docker-entrypoint-initdb.d/dump_data.sql'
-      - './docker/db/conf:/etc/mysql/conf.d'
-      - './docker/data/db:/var/lib/mysql'
-      - './docker/log/db:/var/log/mysql'
-  fp-redis:
-    image: 'redis:4'
-    container_name: fp_redis
-    restart: always
-    volumes:
-      - './docker/data/redis:/data'
+#      - fp-mongo
+#  fp-nodeapp:
+#    build:
+#      context: ./docker/nodeapp
+#      dockerfile: Dockerfile
+#    ports:
+#     - "9000:9000"
+#    volumes:
+#     - ./src/backapp:/code
+#    links:
+#      - fp-db:db
+#      - fp-redis:redis
+#      - fp-mongo:mongo
+#    depends_on:
+#      - fp-db
+#      - fp-redis
+#      - fp-mongo
   fp-frontapp:
     build:
       context: ./docker/frontapp
@@ -70,9 +50,54 @@ services:
       - fp-php:php
       - fp-db:db
       - fp-redis:redis
+  fp-php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    ports:
+     - "9000:9000"
+    volumes:
+     - ./src/backapp:/code
+    links:
+      - fp-db:db
+      - fp-redis:redis
+#      - fp-mongo:mongo
+    depends_on:
+      - fp-db
+      - fp-redis
+#      - fp-mongo
+  fp-db:
+    build:
+      context: ./docker/db
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'devel_db'
+      MYSQL_USER: 'devel'
+      MYSQL_PASSWORD: 'devel'
+    volumes:
+      - './src/backapp/data/sql/dump.sql:/docker-entrypoint-initdb.d/dump.sql'
+      - './src/backapp/data/sql/dump_data.sql:/docker-entrypoint-initdb.d/dump_data.sql'
+      - './docker/db/conf:/etc/mysql/conf.d'
+      - './docker/data/db:/var/lib/mysql'
+      - './docker/log/db:/var/log/mysql'
+#  fp-mongo:
+#    build:
+#      context: ./docker/mongo
+#      dockerfile: Dockerfile
+#    volumes:
+#      - '/docker/data/mongo/db:/data/db'
+#      - '/docker/data/mongo/configdb:/data/configdb'
+#    ports:
+#      - "27018:27017"
+  fp-redis:
+    image: 'redis:4'
+    restart: always
+    volumes:
+      - './docker/data/redis:/data'
   fp-adminer:
     image: adminer
-    container_name: fp_adminer
     restart: always
     links:
       - fp-db:db
