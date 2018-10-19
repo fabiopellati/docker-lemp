@@ -14,6 +14,7 @@ RUN ln -snf /usr/share/zoneinfo/{$TIMEZONE} /etc/localtime && echo {$TIMEZONE} >
 # Update system
 RUN apt-get update && apt-get upgrade -y
 
+
 # Install needed binaries
 RUN apt-get -y install vim net-tools telnet
 
