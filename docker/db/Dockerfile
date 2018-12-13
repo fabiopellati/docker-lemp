@@ -12,12 +12,11 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN ln -snf /usr/share/zoneinfo/{$TIMEZONE} /etc/localtime && echo {$TIMEZONE} > /etc/timezone
 
 # Update system
-RUN apt-get update && apt-get upgrade -y
-
+#RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
 
 # Install needed binaries
-RUN apt-get -y install vim net-tools telnet
+#RUN apt-get -y install vim net-tools telnet
 
 # Clean up APT when done.
-RUN apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+#RUN apt-get clean && \
+#	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
