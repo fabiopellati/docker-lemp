@@ -1,5 +1,5 @@
 FROM node:latest
 
-WORKDIR /opt/app
+WORKDIR /usr/local/app
 RUN npm install
 CMD ["npm run dev"]

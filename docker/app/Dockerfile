@@ -1,3 +1,3 @@
 FROM nginx:latest
 
-WORKDIR /code
+WORKDIR /usr/local/app
